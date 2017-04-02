@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "CoffeeTeaOrWifi", "CoffeeTeaOrWifi.njsproj", "{BBBD2B4B-4DF9-4A75-9761-B3A31353BC6A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBBD2B4B-4DF9-4A75-9761-B3A31353BC6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBBD2B4B-4DF9-4A75-9761-B3A31353BC6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBBD2B4B-4DF9-4A75-9761-B3A31353BC6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBBD2B4B-4DF9-4A75-9761-B3A31353BC6A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
