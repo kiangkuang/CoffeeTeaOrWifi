@@ -25,7 +25,8 @@ Server.post("/api/messages", Connector.listen());
 //=========================================================
 
 Bot.dialog("/", function (session) {
-    console.log(JSON.stringify(session));
+    console.log(session);
+    console.log(JSON.stringify(session.message));
 
     var params = {
         near: session.message.text,
