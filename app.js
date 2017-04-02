@@ -25,7 +25,7 @@ Server.post("/api/messages", Connector.listen());
 //=========================================================
 
 Bot.dialog("/", function (session) {
-    console.log(session);
+    console.log(JSON.stringify(session));
 
     var params = {
         near: session.message.text,
@@ -35,7 +35,7 @@ Bot.dialog("/", function (session) {
 
     Foursquare.exploreVenues(params, function (error, venues) {
         if (error) {
-            console.log(error);
+            console.log(JSON.stringify(error));
             session.send("I can't find this location!");
             return;
         }
