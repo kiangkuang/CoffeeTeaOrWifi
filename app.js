@@ -25,11 +25,14 @@ Server.post("/api/messages", Connector.listen());
 //=========================================================
 
 Bot.dialog("/", function (session) {
+    console.log(session);
+
     var params = {
         near: session.message.text,
         query: "Coffeeshops with WiFi",
         limit: 5
     };
+
     Foursquare.exploreVenues(params, function (error, venues) {
         if (error) {
             console.log(error);
