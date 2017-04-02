@@ -35,7 +35,7 @@ Bot.dialog("/", function (session) {
 
     if (session.message.attachments.length && session.message.attachments[0].type === "location") {
         var coords = session.message.attachments[0].payload.coordinates;
-        params.ll = coords.lat + "," + coords.long;
+        params.ll = coords.lat + ", " + coords.long;
     } else {
         params.near = session.message.text;
     }
