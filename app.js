@@ -29,10 +29,16 @@ Bot.dialog("/", function (session) {
     console.log(JSON.stringify(session.message));
 
     var params = {
-        near: session.message.text,
         query: "Coffeeshops with WiFi",
         limit: 5
     };
+
+    if (session.message.attachments.length && session.message.attachments[0].type === "location") {
+        var coords = session.message.attachments[0].payload.coordinates;
+        params.ll = coords.lat + "," + coords.long;
+    } else {
+        params.near = session.message.text;
+    }
 
     Foursquare.exploreVenues(params, function (error, venues) {
         if (error) {
