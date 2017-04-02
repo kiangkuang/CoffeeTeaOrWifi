@@ -33,9 +33,9 @@ Bot.dialog("/", function (session) {
         limit: 5
     };
 
-    if (session.message.attachments.length && session.message.attachments[0].type === "location") {
-        var coords = session.message.attachments[0].payload.coordinates;
-        params.ll = coords.lat + ", " + coords.long;
+    if (session.message.entities.length && session.message.entities[0].type === "Place") {
+        var geo = session.message.entities[0].geo;
+        params.ll = geo.lat + "," + geo.long;
     } else {
         params.near = session.message.text;
     }
