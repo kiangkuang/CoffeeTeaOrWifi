@@ -25,6 +25,36 @@ Server.post("/api/messages", Connector.listen());
 //=========================================================
 
 Bot.dialog("/", function (session) {
-    console.log(session);
-    session.send(session.message.text);
+    var params = {
+        near: session.message.text,
+        query: "Coffeeshops with WiFi",
+        limit: 5
+    };
+    Foursquare.exploreVenues(params, function (error, venues) {
+        if (error) {
+            console.log(error);
+            session.send("I can't find this location!");
+            return;
+        }
+
+        console.log(JSON.stringify(venues));
+
+        if (!venues.response.groups[0].items.length) {
+            session.send("I can't find anything here!");
+            return;
+        }
+
+        var places = venues.response.groups[0].items.map(function (element) {
+            return {
+                name: element.venue.name,
+                address: element.venue.location.address
+            }
+        });
+
+        session.send(FixBotNewLine(JSON.stringify(places, null, "\t")));
+    });
 });
+
+function FixBotNewLine(string) {
+    return string.replace("\n", "\n\n");
+}

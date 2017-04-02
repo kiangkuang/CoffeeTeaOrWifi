@@ -5,7 +5,7 @@
 
         npm install 
 
-2. Set up bot token
+2. Create `.env` file
 
         npm run setup
 
