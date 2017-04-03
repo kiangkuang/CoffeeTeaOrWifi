@@ -31,6 +31,7 @@ bot.dialog("/", [
     function (session) {
         var options = {
             prompt: "Which area should I search?",
+            useNativeControl: true,
             skipConfirmationAsk: true
         };
 
