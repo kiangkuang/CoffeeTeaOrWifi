@@ -61,7 +61,7 @@ bot.dialog("/", [
                     console.log(JSON.stringify(element));
                     return new builder.HeroCard(session)
                         .title(element.venue.name)
-                        .subtitle(element.venue.location.address + "\n\nPrice: " + element.venue.price.message)
+                        .subtitle(element.venue.location.address + (element.venue.price ? "\n\nPrice: " + element.venue.price.message : ""))
                         .images([
                             builder.CardImage.create(session, element.tips && element.tips.length ? element.tips[0].photourl : "")
                         ])
