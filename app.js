@@ -1,70 +1,74 @@
-﻿var Restify = require("restify");
-var Builder = require("botbuilder");
-var Foursquare = (require("foursquarevenues"))(process.env.FS_CLIENTIDKEY, process.env.FS_CLIENTSECRETKEY);
+﻿var restify = require("restify");
+var builder = require("botbuilder");
+var locationDialog = require('botbuilder-location');
+var foursquare = (require("foursquarevenues"))(process.env.FS_CLIENTIDKEY, process.env.FS_CLIENTSECRETKEY);
 
 //=========================================================
 // Bot Setup
 //=========================================================
 
 // Setup Restify Server
-var Server = Restify.createServer();
-Server.listen(process.env.port || process.env.PORT || 3978, function () {
-    console.log("%s listening to %s", Server.name, Server.url);
+var server = restify.createServer();
+server.listen(process.env.port || process.env.PORT || 3978, function () {
+    console.log("%s listening to %s", server.name, server.url);
 });
 
 // Create chat bot
-var Connector = new Builder.ChatConnector({
+var connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
-var Bot = new Builder.UniversalBot(Connector);
-Server.post("/api/messages", Connector.listen());
+var bot = new builder.UniversalBot(connector);
+server.post("/api/messages", connector.listen());
+
+bot.library(locationDialog.createLibrary(process.env.BING_MAPS_API_KEY));
 
 //=========================================================
 // Bots Dialogs
 //=========================================================
 
-Bot.dialog("/", function (session) {
-    console.log(session);
-    console.log(JSON.stringify(session.message));
+bot.dialog("/", [
+    function (session) {
+        var options = {
+            prompt: "Which area should I search?",
+            useNativeControl: true,
+            skipConfirmationAsk: true
+        };
 
-    var params = {
-        query: "Coffeeshops with WiFi",
-        limit: 5
-    };
+        locationDialog.getLocation(session, options);
+    },
+    function (session, results) {
+        if (results.response) {
+            var place = results.response;
+            console.log(place);
 
-    if (session.message.entities.length && session.message.entities[0].type === "Place") {
-        var geo = session.message.entities[0].geo;
-        params.ll = geo.latitude + "," + geo.longitude;
-    } else {
-        params.near = session.message.text;
+            var params = {
+                query: "Coffeeshops with WiFi",
+                limit: 5
+            };
+
+            params.ll = place.geo.latitude + "," + place.geo.longitude;
+
+            foursquare.exploreVenues(params, function (error, venues) {
+                //console.log(JSON.stringify(venues));
+
+                if (!venues.response.groups[0].items.length) {
+                    session.send("I can't find anything here!");
+                    return;
+                }
+
+                var attachments = venues.response.groups[0].items.map(function (element) {
+                    console.log(JSON.stringify(element));
+                    return new builder.HeroCard(session)
+                        .title(element.venue.name)
+                        .subtitle(element.venue.location.address + "\n\nPrice: " + element.venue.price.message)
+                        .images([
+                            builder.CardImage.create(session, element.tips && element.tips.length ? element.tips[0].photourl : "")
+                        ])
+                        .tap(builder.CardAction.openUrl(session, element.venue.url));
+                });
+                session.send(new builder.Message(session).attachments(attachments));
+            });
+        }
     }
-
-    Foursquare.exploreVenues(params, function (error, venues) {
-        if (error) {
-            console.log(JSON.stringify(error));
-            session.send("I can't find this location!");
-            return;
-        }
-
-        console.log(JSON.stringify(venues));
-
-        if (!venues.response.groups[0].items.length) {
-            session.send("I can't find anything here!");
-            return;
-        }
-
-        var places = venues.response.groups[0].items.map(function (element) {
-            return {
-                name: element.venue.name,
-                address: element.venue.location.address
-            }
-        });
-
-        session.send(FixBotNewLine(JSON.stringify(places, null, "\t")));
-    });
-});
-
-function FixBotNewLine(string) {
-    return string.replace("\n", "\n\n");
-}
+]);
