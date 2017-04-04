@@ -43,7 +43,7 @@ bot.dialog("/", [
             console.log(place);
 
             var params = {
-                query: "Cafes with WiFi",
+                query: "Coffeeshops with WiFi",
                 limit: 5,
                 venuePhotos: 1,
                 sortByDistance: 1
@@ -52,8 +52,6 @@ bot.dialog("/", [
             params.ll = place.geo.latitude + "," + place.geo.longitude;
 
             foursquare.exploreVenues(params, function (error, venues) {
-                //console.log(JSON.stringify(venues));
-
                 if (!venues.response.groups[0].items.length) {
                     session.send("I can't find anything here!");
                     return;
@@ -70,7 +68,7 @@ bot.dialog("/", [
                         .subtitle(subtitle)
                         .images([
                             builder.CardImage.create(session, image)
-                                .tap(builder.CardAction.openUrl(session, url))
+                                .tap(builder.CardAction.showImage(session, image))
                         ])
                         .buttons([
                             builder.CardAction.openUrl(session, url, "Website"),
