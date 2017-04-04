@@ -45,7 +45,8 @@ bot.dialog("/", [
             var params = {
                 query: "Cafes with WiFi",
                 limit: 5,
-                venuePhotos: 1
+                venuePhotos: 1,
+                sortByDistance: 1
             };
 
             params.ll = place.geo.latitude + "," + place.geo.longitude;
