@@ -60,7 +60,7 @@ bot.dialog("/", [
 
                 var attachments = venues.response.groups[0].items.map(function (element) {
                     console.log(JSON.stringify(element));
-                    var image = element.venue.featuredPhotos.items.length ? `${element.venue.featuredPhotos.items[0].prefix}original${element.venue.featuredPhotos.items[0].suffix}` : "";
+                    var image = element.venue.photos.groups.length && element.venue.photos.groups[0].items.length ? `${element.venue.photos.groups[0].items[0].prefix}original${element.venue.featuredPhotos.items[0].suffix}` : "";
                     var url = element.venue.url ? element.venue.url : `https://foursquare.com/v/${element.venue.id}`;
                     var mapUrl = `https://maps.google.com/maps?daddr=${element.venue.location.lat},${element.venue.location.lng}`;
                     var subtitle = element.venue.location.address + (element.venue.price ? `\n\nPrice: ${element.venue.price.message}` : "");
