@@ -68,7 +68,7 @@ bot.dialog("/", [
                         ])
                         .buttons([
                             builder.CardAction.openUrl(session, element.venue.url, "Website"),
-                            builder.CardAction.openUrl(session, `https://maps.google.com/maps?daddr=${element.venue.location.lat},${element.venue.location.lng}`, "Directions"),
+                            builder.CardAction.openUrl(session, "https://maps.google.com/maps?daddr=" + element.venue.location.lat + "," + element.venue.location.lng, "Directions")
                         ]);
                 });
                 session.send(new builder.Message(session)
