@@ -1,6 +1,6 @@
 ﻿var restify = require("restify");
 var builder = require("botbuilder");
-var locationDialog = require('botbuilder-location');
+var locationDialog = require("botbuilder-location");
 var foursquare = (require("foursquarevenues"))(process.env.FS_CLIENTIDKEY, process.env.FS_CLIENTSECRETKEY);
 
 //=========================================================
@@ -43,13 +43,12 @@ bot.dialog("/", [
             console.log(place);
 
             var params = {
+                ll: place.geo.latitude + "," + place.geo.longitude,
                 query: "Coffeeshops with WiFi",
                 limit: 5,
                 venuePhotos: 1,
                 sortByDistance: 1
             };
-
-            params.ll = place.geo.latitude + "," + place.geo.longitude;
 
             foursquare.exploreVenues(params, function (error, venues) {
                 if (!venues.response.groups[0].items.length) {
@@ -57,14 +56,16 @@ bot.dialog("/", [
                     return;
                 }
 
-                var attachments = venues.response.groups[0].items.map(function (element) {
+                var carousel = venues.response.groups[0].items.map(function (element) {
                     console.log(JSON.stringify(element));
-                    var image = element.venue.photos.groups.length && element.venue.photos.groups[0].items.length ? `${element.venue.photos.groups[0].items[0].prefix}600x600${element.venue.featuredPhotos.items[0].suffix}` : "";
-                    var url = element.venue.url ? element.venue.url : `https://foursquare.com/v/${element.venue.id}`;
-                    var mapUrl = `https://maps.google.com/maps?daddr=${element.venue.location.lat},${element.venue.location.lng}`;
-                    var subtitle = element.venue.location.address + (element.venue.price ? `\n\nPrice: ${element.venue.price.message}` : "");
+                    var venue = element.venue;
+                    var name = venue.name;
+                    var subtitle = venue.location.address + (venue.price ? `\n\nPrice: ${venue.price.message}` : "");
+                    var image = venue.photos.groups.length && venue.photos.groups[0].items.length ? `${venue.photos.groups[0].items[0].prefix}600x600${venue.featuredPhotos.items[0].suffix}` : "";
+                    var url = venue.url ? venue.url : `https://foursquare.com/v/${venue.id}`;
+                    var mapUrl = `https://maps.google.com/maps?daddr=${venue.location.lat},${venue.location.lng}`;
                     return new builder.HeroCard(session)
-                        .title(element.venue.name)
+                        .title(name)
                         .subtitle(subtitle)
                         .images([
                             builder.CardImage.create(session, image)
@@ -77,7 +78,7 @@ bot.dialog("/", [
                 });
                 session.send(new builder.Message(session)
                     .attachmentLayout(builder.AttachmentLayout.carousel)
-                    .attachments(attachments));
+                    .attachments(carousel));
             });
         }
     }
