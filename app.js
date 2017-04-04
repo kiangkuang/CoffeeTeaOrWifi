@@ -43,7 +43,7 @@ bot.dialog("/", [
             console.log(place);
 
             var params = {
-                query: "Coffeeshops with WiFi",
+                query: "Cafes with WiFi",
                 limit: 5
             };
 
@@ -64,10 +64,16 @@ bot.dialog("/", [
                         .subtitle(element.venue.location.address + (element.venue.price ? "\n\nPrice: " + element.venue.price.message : ""))
                         .images([
                             builder.CardImage.create(session, element.tips && element.tips.length ? element.tips[0].photourl : "")
+                                .tap(builder.CardAction.openUrl(session, element.venue.url))
                         ])
-                        .tap(builder.CardAction.openUrl(session, element.venue.url));
+                        .buttons([
+                            builder.CardAction.openUrl(session, element.venue.url, "Website"),
+                            builder.CardAction.openUrl(session, `https://maps.google.com/maps?daddr=${element.venue.location.lat},${element.venue.location.lng}`, "Directions"),
+                        ]);
                 });
-                session.send(new builder.Message(session).attachments(attachments));
+                session.send(new builder.Message(session)
+                    .attachmentLayout(builder.AttachmentLayout.carousel)
+                    .attachments(attachments));
             });
         }
     }
