@@ -29,6 +29,19 @@ bot.library(locationDialog.createLibrary(process.env.BING_MAPS_API_KEY));
 
 bot.dialog("/", [
     function (session) {
+        session.beginDialog("/help");
+    }
+]);
+
+bot.dialog("/help", [
+    function (session) {
+        session.send(`Hi ${session.message.user.name}! I'm here to help you find cafes with wifi for you to do your work or just chill! Just send me your location and I'll recommend you some places nearby!`);
+        session.beginDialog("/find");
+    }
+]).triggerAction({ matches: /^(hello|hi|help|option)/i });;
+
+bot.dialog("/find", [
+    function (session) {
         var options = {
             prompt: "Which area should I search?",
             useNativeControl: true,
@@ -80,7 +93,7 @@ bot.dialog("/", [
                     .attachmentLayout(builder.AttachmentLayout.carousel)
                     .attachments(carousel));
 
-                session.beginDialog("/");
+                session.beginDialog("/find");
             });
         }
     }
