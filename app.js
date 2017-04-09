@@ -35,6 +35,7 @@ bot.dialog("/", [
 
 bot.dialog("/help", [
     function (session) {
+        console.log(JSON.stringify(session.message));
         session.send(`Hi ${session.message.user.name}! I'm here to help you find cafes with wifi for you to do your work or just chill! Just send me your location and I'll recommend you some places nearby!`);
         session.beginDialog("/find");
     }
@@ -93,7 +94,7 @@ bot.dialog("/find", [
                     .attachmentLayout(builder.AttachmentLayout.carousel)
                     .attachments(carousel));
 
-                session.beginDialog("/find");
+                session.replaceDialog("/find");
             });
         }
     }
