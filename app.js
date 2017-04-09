@@ -79,6 +79,8 @@ bot.dialog("/", [
                 session.send(new builder.Message(session)
                     .attachmentLayout(builder.AttachmentLayout.carousel)
                     .attachments(carousel));
+
+                session.beginDialog("/");
             });
         }
     }
