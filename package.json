@@ -16,6 +16,18 @@
   "scripts": {
     "setup": "cp -n .env.example .env",
     "start": "node -r dotenv/config app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "precommit": "lint-staged"
+  },
+  "devDependencies": {
+    "husky": "^0.13.3",
+    "lint-staged": "^3.4.0",
+    "prettier": "^1.1.0"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write --tab-width 4",
+      "git add"
+    ]
   }
 }
